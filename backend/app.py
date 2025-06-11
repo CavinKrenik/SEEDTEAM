@@ -13,13 +13,13 @@ UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# ✅ Use writable DB path for Render
+# ✅ Use proper DB path (root-level file, not in /instance anymore)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seed.db'
 
 CORS(app)
 db.init_app(app)
 
-# ✅ Create DB tables
+# ✅ Create tables if not exist
 with app.app_context():
     db.create_all()
 
