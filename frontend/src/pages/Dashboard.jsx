@@ -10,7 +10,7 @@ export default function Dashboard({ token }) {
   const membersPerPage = 5;
 
   const fetchMembers = () => {
-    fetch('http://localhost:5000/members', {
+    fetch('https://seedteam.onrender.com/members', {
       headers: { Authorization: token },
     })
       .then(res => res.json())
@@ -75,7 +75,7 @@ export default function Dashboard({ token }) {
 
   const deleteMember = async (id) => {
     if (!window.confirm('Are you sure you want to delete this member?')) return;
-    await fetch(`http://localhost:5000/delete_member/${id}`, {
+    await fetch(`https://seedteam.onrender.com/delete_member/${id}`, {
       method: 'DELETE',
       headers: { Authorization: token },
     });
@@ -136,7 +136,7 @@ export default function Dashboard({ token }) {
             )}
             {m.chart_filename && (
               <img
-                src={`http://localhost:5000/uploads/${m.chart_filename}`}
+                src={`https://seedteam.onrender.com/uploads/${m.chart_filename}`}
                 alt="Chart"
                 className="mt-2 max-w-xs border rounded"
               />

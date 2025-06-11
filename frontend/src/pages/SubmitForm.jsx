@@ -36,7 +36,7 @@ export default function SubmitForm() {
     if (chart) data.append('chart', chart);
 
     try {
-      const res = await fetch('http://localhost:5000/submit', { method: 'POST', body: data });
+      const res = await fetch('https://seedteam.onrender.com/submit', { method: 'POST', body: data });
       const result = await res.json();
       if (result.success) {
         setRoles(result.roles);
