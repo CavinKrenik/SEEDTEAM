@@ -18,42 +18,60 @@ with app.app_context():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    data = request.form
-    chart = request.files.get('chart')
-    filename = secure_filename(chart.filename) if chart else None
-    if filename:
-        chart.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    try:
+        data = request.form
+        required_fields = [
+            'name', 'email', 'phone', 'type', 'authority',
+            'profile', 'definition', 'strategy',
+            'not_self_theme', 'incarnation_cross'
+        ]
 
-    # 🔁 Use full logic from role_assigner.py
-    roles, description = assign_roles_and_description(
-        data['type'],
-        data['authority'],
-        data['profile'],
-        data['definition'],
-        data['strategy'],
-        data['not_self_theme'],
-        data['incarnation_cross']
-    )
+        # ✅ Validate all required fields
+        for field in required_fields:
+            if not data.get(field):
+                return jsonify({"error": f"Missing field: {field}"}), 400
 
-    member = Member(
-        name=data['name'],
-        email=data['email'],
-        phone=data['phone'],
-        type=data['type'],
-        authority=data['authority'],
-        profile=data['profile'],
-        definition=data['definition'],
-        strategy=data['strategy'],
-        not_self_theme=data['not_self_theme'],
-        incarnation_cross=data['incarnation_cross'],
-        chart_filename=filename,
-        roles=roles,
-        description=description
-    )
-    db.session.add(member)
-    db.session.commit()
+        # ✅ Handle chart upload
+        chart = request.files.get('chart')
+        filename = secure_filename(chart.filename) if chart else None
+        if filename:
+            chart.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-    return jsonify({"success": True, "roles": roles, "description": description})
+        # ✅ Assign roles and description
+        roles, description = assign_roles_and_description(
+            data['type'],
+            data['authority'],
+            data['profile'],
+            data['definition'],
+            data['strategy'],
+            data['not_self_theme'],
+            data['incarnation_cross']
+        )
+
+        # ✅ Create and save new member
+        member = Member(
+            name=data['name'],
+            email=data['email'],
+            phone=data['phone'],
+            type=data['type'],
+            authority=data['authority'],
+            profile=data['profile'],
+            definition=data['definition'],
+            strategy=data['strategy'],
+            not_self_theme=data['not_self_theme'],
+            incarnation_cross=data['incarnation_cross'],
+            chart_filename=filename,
+            roles=roles,
+            description=description
+        )
+        db.session.add(member)
+        db.session.commit()
+
+        return jsonify({"success": True, "roles": roles, "description": description})
+
+    except Exception as e:
+        print("❌ Error in /submit:", str(e))
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/login', methods=['POST'])
 def login():

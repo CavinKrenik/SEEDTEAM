@@ -19,6 +19,36 @@ class Member(db.Model):
     description = db.Column(db.Text)
     chart_filename = db.Column(db.String(200))
 
+    def __init__(
+        self,
+        name,
+        email,
+        phone,
+        type,
+        authority,
+        profile,
+        definition,
+        strategy,
+        not_self_theme,
+        incarnation_cross,
+        roles,
+        description,
+        chart_filename=None
+    ):
+        self.name = name
+        self.email = email
+        self.phone = phone
+        self.type = type
+        self.authority = authority
+        self.profile = profile
+        self.definition = definition
+        self.strategy = strategy
+        self.not_self_theme = not_self_theme
+        self.incarnation_cross = incarnation_cross
+        self.roles = json.dumps(roles)  # Store list as JSON
+        self.description = description
+        self.chart_filename = chart_filename
+
     def serialize(self):
         return {
             "id": self.id,
@@ -36,18 +66,3 @@ class Member(db.Model):
             "description": self.description,
             "chart_filename": self.chart_filename
         }
-
-    def __init__(self, name, email, phone, type, authority, profile, definition, strategy, not_self_theme, incarnation_cross, roles, description, chart_filename=None):
-        self.name = name
-        self.email = email
-        self.phone = phone
-        self.type = type
-        self.authority = authority
-        self.profile = profile
-        self.definition = definition
-        self.strategy = strategy
-        self.not_self_theme = not_self_theme
-        self.incarnation_cross = incarnation_cross
-        self.roles = json.dumps(roles)  # Store list as JSON string
-        self.description = description
-        self.chart_filename = chart_filename

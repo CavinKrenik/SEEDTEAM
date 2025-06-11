@@ -1,4 +1,5 @@
 # backend/role_assigner.py
+
 def assign_roles_and_description(hd_type, authority, profile, definition, strategy, not_self_theme, incarnation_cross):
     roles = []
     description_lines = []
@@ -74,7 +75,7 @@ def assign_roles_and_description(hd_type, authority, profile, definition, strate
         "Split Definition": "Collaborator / Bridge-Builder / Connector",
         "Triple Split Definition": "Diverse Networker / Multi-Environment Operator",
         "Quadruple Split Definition": "Complex Systems Integrator / Deep Processor",
-        "No Definition": "Environmental Barometer / Community Mirror" # Exclusive to Reflectors
+        "No Definition": "Environmental Barometer / Community Mirror"
     }
     definition_descriptions = {
         "Single Definition": "All energy centers are connected, leading to quick processing and a preference for independent work. Finds comfort in solitude.",
@@ -84,7 +85,7 @@ def assign_roles_and_description(hd_type, authority, profile, definition, strate
         "No Definition": "None of the energy centers are defined (Reflectors only). Highly permeable and absorbs significant environmental energy, requiring ample time for processing and discerning decisions."
     }
     if definition in definition_descriptions:
-        roles.append(definition_roles.get(definition, "Unique Energetic Integrator")) # Default if role not specific
+        roles.append(definition_roles.get(definition, "Unique Energetic Integrator"))
         description_lines.append(f"Definition Insight: {definition_descriptions[definition]}")
 
     # 5. Strategy Logic
@@ -108,7 +109,7 @@ def assign_roles_and_description(hd_type, authority, profile, definition, strate
     if not_self_theme in not_self_theme_descriptions:
         description_lines.append(f"Not-Self Theme (Indicator of Misalignment): {not_self_theme_descriptions[not_self_theme]}")
 
-    # 7. Incarnation Cross Logic (based on Angle for broader categorization)
+    # 7. Incarnation Cross Logic
     incarnation_cross_angle_roles = {
         "Right Angle Crosses": "Personal Destiny Seeker / Individual Learner",
         "Left Angle Crosses": "Transpersonal Influencer / Community Weaver",
@@ -120,14 +121,7 @@ def assign_roles_and_description(hd_type, authority, profile, definition, strate
         "Juxtaposition Crosses": "Your life purpose is fixed and inherent to your being, often manifesting as a solitary yet stabilizing influence, irrespective of external interaction."
     }
 
-    # Determine the angle of the Incarnation Cross if possible (this would require a more complex lookup)
-    # For now, we'll assume the 'incarnation_cross' input might contain the angle or a recognizable pattern.
-    # If a specific Incarnation Cross name is provided, you might want to map it to its angle.
-    # For this example, we'll use a generic placeholder for the specific cross and elaborate on the angle.
-    
     if incarnation_cross:
-        # This is a simplification; in a real app, you'd parse 'incarnation_cross' to get its angle
-        # or have a lookup table for all 768 crosses to their angles.
         angle = None
         if "Right Angle" in incarnation_cross:
             angle = "Right Angle Crosses"
@@ -141,6 +135,5 @@ def assign_roles_and_description(hd_type, authority, profile, definition, strate
             description_lines.append(f"Incarnation Cross ({incarnation_cross}): Your overarching life purpose is associated with {incarnation_cross_angle_descriptions[angle]} This deeper purpose unfolds over time and is best revealed when you align with your Human Design Strategy and Authority.")
         else:
             description_lines.append(f"Incarnation Cross ({incarnation_cross}): Represents your overarching life purpose or 'soul curriculum'. This deeper purpose unfolds over time, best revealed when you align with your Human Design Strategy and Authority.")
-
 
     return roles, "\n".join(description_lines)
