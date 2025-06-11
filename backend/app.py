@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from models import db, Member
 from auth import check_login
-from role_assigner import assign_roles_and_description  # 🔁 NEW
+from role_assigner import assign_roles_and_description
 import os
 from werkzeug.utils import secure_filename
 
@@ -12,7 +12,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seed.db'
 CORS(app)
 db.init_app(app)
 
-# ✅ Flask 3 compatibility — create tables on app startup
+# ✅ Create database tables on startup
 with app.app_context():
     db.create_all()
 
@@ -26,13 +26,13 @@ def submit():
 
     # 🔁 Use full logic from role_assigner.py
     roles, description = assign_roles_and_description(
-        hd_type=data.get('type'),
-        authority=data.get('authority'),
-        profile=data.get('profile'),
-        definition=data.get('definition'),
-        strategy=data.get('strategy'),
-        not_self_theme=data.get('not_self_theme'),
-        incarnation_cross=data.get('incarnation_cross')
+        data['type'],
+        data['authority'],
+        data['profile'],
+        data['definition'],
+        data['strategy'],
+        data['not_self_theme'],
+        data['incarnation_cross']
     )
 
     member = Member(
@@ -42,6 +42,10 @@ def submit():
         type=data['type'],
         authority=data['authority'],
         profile=data['profile'],
+        definition=data['definition'],
+        strategy=data['strategy'],
+        not_self_theme=data['not_self_theme'],
+        incarnation_cross=data['incarnation_cross'],
         chart_filename=filename,
         roles=roles,
         description=description
