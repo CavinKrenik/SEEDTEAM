@@ -8,7 +8,8 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = './uploads'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seed.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///backend/seed.db'
+
 CORS(app)
 db.init_app(app)
 
