@@ -14,6 +14,9 @@ db.init_app(app)
 
 # ✅ Create database tables on startup
 with app.app_context():
+    if os.path.exists('seed.db'):
+      os.remove('seed.db')
+
     db.create_all()
 
 @app.route('/submit', methods=['POST'])
