@@ -82,7 +82,6 @@ export default function Dashboard({ token }) {
     fetchMembers();
   };
 
-  // Pagination logic
   const indexOfLast = currentPage * membersPerPage;
   const indexOfFirst = indexOfLast - membersPerPage;
   const currentMembers = filtered.slice(indexOfFirst, indexOfLast);
@@ -151,7 +150,6 @@ export default function Dashboard({ token }) {
         ))}
       </div>
 
-      {/* Pagination Controls */}
       <div className="mt-6 flex justify-center gap-2">
         {Array.from({ length: totalPages }, (_, i) => (
           <button
