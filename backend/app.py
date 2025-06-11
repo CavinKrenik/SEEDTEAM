@@ -7,18 +7,19 @@ import os
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = './uploads'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///backend/seed.db'
+
+# ✅ Ensure upload folder exists
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# ✅ Use writable DB path for Render
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seed.db'
 
 CORS(app)
 db.init_app(app)
 
-# 🔁 Delete old broken DB on startup (ONLY during first deploy or dev)
-db_path = os.path.join('backend', 'seed.db')
-if os.path.exists(db_path):
-    os.remove(db_path)
-
-# ✅ Create database tables on startup
+# ✅ Create DB tables
 with app.app_context():
     db.create_all()
 
@@ -31,7 +32,6 @@ def submit():
             'profile', 'definition', 'strategy',
             'not_self_theme', 'incarnation_cross'
         ]
-
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"Missing field: {field}"}), 400
