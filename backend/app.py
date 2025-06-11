@@ -13,6 +13,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///backend/seed.db'
 CORS(app)
 db.init_app(app)
 
+# 🔁 Delete old broken DB on startup (ONLY during first deploy or dev)
+db_path = os.path.join('backend', 'seed.db')
+if os.path.exists(db_path):
+    os.remove(db_path)
+
 # ✅ Create database tables on startup
 with app.app_context():
     db.create_all()
@@ -27,18 +32,15 @@ def submit():
             'not_self_theme', 'incarnation_cross'
         ]
 
-        # ✅ Validate all required fields
         for field in required_fields:
             if not data.get(field):
                 return jsonify({"error": f"Missing field: {field}"}), 400
 
-        # ✅ Handle chart upload
         chart = request.files.get('chart')
         filename = secure_filename(chart.filename) if chart else None
         if filename:
             chart.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-        # ✅ Assign roles and description
         roles, description = assign_roles_and_description(
             data['type'],
             data['authority'],
@@ -49,7 +51,6 @@ def submit():
             data['incarnation_cross']
         )
 
-        # ✅ Create and save new member
         member = Member(
             name=data['name'],
             email=data['email'],
