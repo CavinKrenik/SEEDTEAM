@@ -18,49 +18,55 @@ with app.app_context():
 
 @app.route('/submit', methods=['POST'])
 def submit():
-    data = request.form
-    chart = request.files.get('chart')
-    filename = secure_filename(chart.filename) if chart else None
-    if filename:
-        chart.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    try:
+        data = request.form
+        chart = request.files.get('chart')
+        filename = secure_filename(chart.filename) if chart else None
+        if filename:
+            chart.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
-    # 🔁 Use full logic from role_assigner.py
-    roles, description = assign_roles_and_description(
-        data['type'],
-        data['authority'],
-        data['profile'],
-        data['definition'],
-        data['strategy'],
-        data['not_self_theme'],
-        data['incarnation_cross']
-    )
+        # 🔁 Use full logic from role_assigner.py
+        roles, description = assign_roles_and_description(
+            data['type'],
+            data['authority'],
+            data['profile'],
+            data['definition'],
+            data['strategy'],
+            data['not_self_theme'],
+            data['incarnation_cross']
+        )
 
-    member = Member(
-        name=data['name'],
-        email=data['email'],
-        phone=data['phone'],
-        type=data['type'],
-        authority=data['authority'],
-        profile=data['profile'],
-        definition=data['definition'],
-        strategy=data['strategy'],
-        not_self_theme=data['not_self_theme'],
-        incarnation_cross=data['incarnation_cross'],
-        chart_filename=filename,
-        roles=roles,
-        description=description
-    )
-    db.session.add(member)
-    db.session.commit()
+        member = Member(
+            name=data['name'],
+            email=data['email'],
+            phone=data['phone'],
+            type=data['type'],
+            authority=data['authority'],
+            profile=data['profile'],
+            definition=data['definition'],
+            strategy=data['strategy'],
+            not_self_theme=data['not_self_theme'],
+            incarnation_cross=data['incarnation_cross'],
+            chart_filename=filename,
+            roles=roles,
+            description=description
+        )
+        db.session.add(member)
+        db.session.commit()
 
-    return jsonify({"success": True, "roles": roles, "description": description})
+        return jsonify({"success": True, "roles": roles, "description": description})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 @app.route('/login', methods=['POST'])
 def login():
-    creds = request.get_json()
-    if check_login(creds['username'], creds['password']):
-        return jsonify({"token": "admin-token"})
-    return jsonify({"error": "Unauthorized"}), 401
+    try:
+        creds = request.get_json(force=True)
+        if check_login(creds['username'], creds['password']):
+            return jsonify({"token": "admin-token"})
+        return jsonify({"error": "Unauthorized"}), 401
+    except Exception as e:
+        return jsonify({"error": f"Invalid login payload: {str(e)}"}), 400
 
 @app.route('/members', methods=['GET'])
 def get_members():
